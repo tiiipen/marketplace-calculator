@@ -1,5 +1,4 @@
 (function() {
-    // 1. Definisikan SELURUH KODE HTML dan CSS sebagai satu string
     const calculatorHTML = `
 <style>
     input[type=number]::-webkit-inner-spin-button, 
@@ -288,7 +287,6 @@
     </div>
 </div>
 `;
-    // 2. Definisikan SELURUH KODE JAVASCRIPT di bawah ini
     
     function formatCurrency(number) {
         if (isNaN(number) || number === null || number === undefined) {
@@ -432,9 +430,7 @@
     }
 
 
-    // 3. Fungsi utama yang dipanggil saat script selesai di-load
     function initCalculator() {
-        // 4. Pasang event listener dan jalankan initial calculation
         const modalInput = document.getElementById('modalPrice');
         if (modalInput) {
             modalInput.addEventListener('input', function() {
@@ -459,13 +455,10 @@
         calculateMarketplacePrice();
     }
     
-    // 5. Cari element target dan inject HTML/CSS
     const targetElement = document.getElementById('marketplace-calculator-container');
     if (targetElement) {
         targetElement.innerHTML = calculatorHTML;
-        // 6. Jalankan inisialisasi setelah elemen HTML ditambahkan ke DOM
         document.addEventListener('DOMContentLoaded', initCalculator);
-        // Fallback untuk memastikan inisialisasi berjalan
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             initCalculator();
         }
