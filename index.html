@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Calculator</title>
+    <title>Marketplace Calculator V2.3.0</title>
     
     <style>
     * {
@@ -142,7 +142,6 @@
         cursor: not-allowed;
     }
 
-
     hr {
         border: 0;
         height: 1px;
@@ -198,23 +197,86 @@
         color: #FF9800;
         line-height: 1.2;
     }
+
+    .roas-table-container { 
+        width: 100%; 
+        margin-top: 0px; 
+        border: 1px solid #ddd;
+        border-radius: 8px; 
+        overflow: hidden; 
+        background-color: #ffffff; 
+    }
+    
+    .roas-header-title {
+        font-weight: bold;
+        color: #ffffff; 
+        font-size: 1.1em;
+        padding: 12px; 
+        text-align: center;
+        border-bottom: none; 
+        margin: 0;
+        background-color: #4CAF50; 
+    }
+
+    .roas-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        font-size: 0.85em; 
+        background-color: #ffffff; 
+        table-layout: fixed; 
+    }
+    
+    .roas-table thead tr:first-child th:nth-child(1) { width: 12%; }
+    .roas-table thead tr:first-child th:nth-child(2) { width: 20%; }
+    .roas-table thead tr:first-child th:last-child { width: 30%; } 
+
+    .roas-table thead th {
+        background-color: #F9F9F9; 
+        color: #000000;
+        font-weight: bold;
+        font-size: 0.85em; 
+        padding: 8px 3px;
+        text-align: center;
+        border: 1px solid #E0E0E0; 
+        white-space: nowrap; 
+    }
+    
+    .roas-table th, .roas-table td {
+        border: 1px solid #E0E0E0; 
+        font-size: 0.85em; 
+        padding: 8px 3px;
+    }
+
+    .roas-table td {
+        text-align: center;
+    }
+    
+    .roas-table td:last-child {
+        text-align: left;
+        padding-left: 8px;
+    }
+
+    .target-row { background-color: #e8f5e9; font-weight: bold; } 
+    .bep-row { background-color: #FFF6AC; font-weight: bold; } 
+
+    .roas-profit-positive { color: #28a745; font-weight: bold; }
+    .roas-profit-negative { color: #dc3545; font-weight: bold; }
 </style>
 
-    
 </head>
 <body>
 
 <div class="calculator-container">
     <h2>Marketplace Calculator</h2>
     
-    <p class="version-tag">Versi 2.2 by Steven Alexander</p>
+    <p class="version-tag">Versi 2.3.0 by Steven Alexander</p>
     
     <hr>
     
     <div class="input-group">
         <label for="modalPrice">Harga Modal (Rp)</label>
         <div class="input-row">
-            <input type="number" id="modalPrice" class="calculator-input" value="100000" min="0">
+            <input type="text" inputmode="numeric" id="modalPrice" class="calculator-input" value="100.000">
         </div>
     </div>
     <div class="input-group slider-group">
@@ -310,6 +372,30 @@
             <strong id="profitAmountOutput">Rp 0</strong>
         </div>
     </div>
+
+    <hr style="border: 0; height: 1px; background: #eee; margin: 20px 0;">
+
+    <div id="roasBreakdownContainer" class="roas-table-container" style="display: none;">
+        
+        <div class="roas-header-title">Simulasi Performa ROAS</div>
+        
+        <table class="roas-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">ROAS</th>
+                    <th rowspan="2">CPA / CPP</th>
+                    <th colspan="2">Profit Bersih</th>
+                    <th rowspan="2">Status</th>
+                </tr>
+                <tr>
+                    <th>IDR</th>
+                    <th>P&L</th>
+                </tr>
+            </thead>
+            <tbody id="roasTableBody">
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 
@@ -325,9 +411,19 @@
             minimumFractionDigits: 0
         }).format(roundedNumber);
     }
+    
+    function formatNumber(number) {
+        if (isNaN(number) || number === null || number === undefined) {
+            return '0';
+        }
+        const roundedNumber = Math.round(number);
+        return new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 0
+        }).format(roundedNumber);
+    }
 
     function formatModalPrice(inputElement) {
-        let value = inputElement.value.replace(/\D/g, ''); 
+        let value = inputElement.value.replace(/\./g, '').replace(/,/g, ''); 
         
         if (value) {
             const numberValue = parseInt(value, 10);
@@ -337,6 +433,11 @@
         } else {
             inputElement.value = '';
         }
+    }
+
+    function getRawModalPrice() {
+        const modalInput = document.getElementById('modalPrice');
+        return parseFloat(modalInput?.value.replace(/\./g, '').replace(/,/g, '')) || 0;
     }
 
     function updateTotalVariable() {
@@ -372,9 +473,7 @@
     
     function calculateMarketplacePrice() {
         const modalInput = document.getElementById('modalPrice');
-        
-        const rawModalPrice = modalInput?.value.replace(/\./g, '') || '0';
-        const modalPrice = parseFloat(rawModalPrice) || 0; 
+        const modalPrice = getRawModalPrice();
         
         const mpFeeRate = parseFloat(document.getElementById('mpFeeRate')?.value) / 100 || 0;
         const adsBudgetRate = parseFloat(document.getElementById('adsBudgetRate')?.value) / 100 || 0;
@@ -389,8 +488,9 @@
         const affiliateAmountOutput = document.getElementById('affiliateAmountOutput');
         const operationalAmountOutput = document.getElementById('operationalAmountOutput');
         const modalPriceOutput = document.getElementById('modalPriceOutput');
+        const roasContainer = document.getElementById('roasBreakdownContainer'); 
 
-        if (!minSellingPriceOutput || !profitAmountOutput || !mpFeeAmountOutput || !adsAmountOutput || !affiliateAmountOutput || !operationalAmountOutput || !modalPriceOutput) { 
+        if (!minSellingPriceOutput || !profitAmountOutput || !mpFeeAmountOutput || !adsAmountOutput || !affiliateAmountOutput || !operationalAmountOutput || !modalPriceOutput || !roasContainer) { 
             return; 
         }
         
@@ -404,6 +504,7 @@
             affiliateAmountOutput.textContent = formatCurrency(0);
             operationalAmountOutput.textContent = formatCurrency(0);
             modalPriceOutput.textContent = formatCurrency(modalPrice); 
+            roasContainer.style.display = 'none'; 
             return;
         }
 
@@ -422,6 +523,79 @@
         affiliateAmountOutput.textContent = formatCurrency(affiliateAmount);
         operationalAmountOutput.textContent = formatCurrency(operationalAmount);
         modalPriceOutput.textContent = formatCurrency(modalPrice);
+        
+        generateRoasSimulation(minSellingPrice, modalPrice, mpFeeAmount, affiliateAmount, operationalAmount, profitAmount, roasContainer);
+    }
+    
+    function generateRoasSimulation(sellingPrice, modalPrice, mpFeeAmount, affiliateAmount, operationalAmount) {
+        
+        const totalNonAdsCost = modalPrice + mpFeeAmount + affiliateAmount + operationalAmount;
+        const maxAdsBudgetBEP = sellingPrice - totalNonAdsCost;
+        
+        const roasBEP = sellingPrice / maxAdsBudgetBEP; 
+        
+        const initialAdsBudget = parseFloat(document.getElementById('adsBudgetRate')?.value) / 100 * sellingPrice;
+        const roasTarget = initialAdsBudget > 0 ? (sellingPrice / initialAdsBudget) : (roasBEP * 2); 
+
+        const scenarios = [
+            { 
+                roas: roasTarget, 
+                statusLabel: 'Target Tercapai', 
+                rowClass: 'target-row' 
+            },
+            { 
+                roas: roasBEP + ((roasTarget - roasBEP) / 2), 
+                statusLabel: 'Untung Rendah', 
+                rowClass: '' 
+            },
+            { 
+                roas: roasBEP, 
+                statusLabel: 'Break Even Point', 
+                rowClass: 'bep-row' 
+            },
+            { 
+                roas: roasBEP * 0.8, 
+                statusLabel: 'Rugi Rendah', 
+                rowClass: '' 
+            },
+            { 
+                roas: roasBEP * 0.5, 
+                statusLabel: 'Rugi Parah', 
+                rowClass: '' 
+            }
+        ];
+
+        const roasTableBody = document.getElementById('roasTableBody');
+        roasTableBody.innerHTML = ''; 
+        
+        scenarios.forEach(item => {
+            
+            const currentRoas = item.roas;
+            const adsActual = sellingPrice / currentRoas;
+            const profitActual = sellingPrice - totalNonAdsCost - adsActual;
+            const profitPercentage = (profitActual / sellingPrice) * 100;
+            
+            const profitColorClass = profitActual >= -50 ? 'roas-profit-positive' : 'roas-profit-negative'; 
+            
+            let profitSign = '';
+            if (profitActual > 50) profitSign = '+'; 
+            
+            let displayRoas = currentRoas >= 10 ? currentRoas.toFixed(0) : currentRoas.toFixed(1);
+            if (displayRoas.endsWith('.0')) displayRoas = displayRoas.slice(0, -2);
+
+            const row = roasTableBody.insertRow();
+            row.className = item.rowClass;
+
+            row.innerHTML = `
+                <td>${displayRoas}</td>
+                <td>${formatNumber(adsActual)}</td>
+                <td class="${profitColorClass}">${formatNumber(profitActual)}</td>
+                <td class="${profitColorClass}">${profitSign}${profitPercentage.toFixed(1)}%</td>
+                <td>${item.statusLabel}</td>
+            `;
+        });
+        
+        document.getElementById('roasBreakdownContainer').style.display = 'block';
     }
 
 
@@ -478,7 +652,7 @@
         }
         
         updateTotalVariable();
-        calculateMarketplacePrice();
+        calculateMarketplacePrice(); 
     });
 </script>
 </html>
