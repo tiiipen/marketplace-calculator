@@ -465,5 +465,40 @@
         updateTotalVariable();
         calculateMarketplacePrice(); 
     });
+
+
+    // Widget Height Adjuster
+    var WIDGET_IDS = [
+        'marketplace-calculator-widget'
+    ];
+    
+    var isHeightSet = {};
+    var HEIGHT_BUFFER = 2;
+
+    window.onmessage = function(event) {
+        
+        var receivedId = event.data.frameId;
+
+        if (WIDGET_IDS.includes(receivedId) && event.data && event.data.height) {
+            
+            var iframe = document.getElementById(receivedId);
+            
+            if (iframe) {
+                var newHeight = event.data.height + HEIGHT_BUFFER;
+                
+                if (!isHeightSet[receivedId]) {
+                    iframe.style.height = newHeight + 'px';
+                    isHeightSet[receivedId] = true;
+                }
+            }
+        }
+    };
+    
+    window.addEventListener('resize', function() {
+        WIDGET_IDS.forEach(function(id) {
+            isHeightSet[id] = false;
+        });
+    });
+
 </script>
 </html>
