@@ -61,7 +61,7 @@
     .roas-table { width: 100%; border-collapse: collapse; font-size: 0.85em; background-color: #ffffff; table-layout: fixed; }
     .roas-table thead tr:first-child th:nth-child(1) { width: 14%; } 
     .roas-table thead tr:first-child th:nth-child(2) { width: 23%; } 
-    .roas-table thead tr:first-child th:last-child { width: 32%; }  
+    .roas-table thead tr:first-child th:last-child { width: 32%; } 
     .roas-table thead th { background-color: #F9F9F9; color: #000000; font-weight: bold; font-size: 0.85em; padding: 8px 3px; text-align: center; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap; }
     .roas-table th, .roas-table td { border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; font-size: 0.85em; padding: 8px 3px; }
     .roas-table th:last-child, .roas-table td:last-child { border-right: none; }
@@ -77,7 +77,7 @@
 </head>
 <body>
 
-<div class="calculator-container">
+<div id="main-container" class="calculator-container">
     <h2>Marketplace Calculator</h2>
     <p class="version-tag">Versi 2.5.1 by Steven Alexander</p>
     <hr>
@@ -233,6 +233,34 @@
 </body>
 
 <script>
+    // --- RESIZE SYSTEM (Solusi Stabil dari Jastip Calculator) ---
+    const FRAME_ID = 'marketplace-calculator-widget'; // ID harus sama dengan Taplink Headscript
+    
+    function getAccurateHeight() {
+        const container = document.getElementById('main-container');
+        if(container) {
+            // Mengukur tinggi container utama + buffer aman 30px
+            return container.offsetHeight + 30; 
+        }
+        return document.body.scrollHeight + 30;
+    }
+
+    function sendHeight() {
+        const h = getAccurateHeight();
+        window.parent.postMessage({ height: h, frameId: FRAME_ID }, '*');
+    }
+
+    function triggerResizeSequence() {
+        sendHeight();
+        // Burst signals untuk menangkap perubahan ketinggian
+        setTimeout(sendHeight, 20);
+        setTimeout(sendHeight, 50);
+        setTimeout(sendHeight, 100);
+        setTimeout(sendHeight, 300);
+        setTimeout(sendHeight, 500); 
+    }
+
+    // --- HELPER FUNCTIONS ---
     function formatCurrency(number) {
         if (isNaN(number) || number === null || number === undefined) { return 'Rp 0'; }
         const roundedNumber = Math.round(number);
@@ -273,20 +301,14 @@
         
         if (totalOutput) {
             totalOutput.textContent = `${totalRate.toFixed(1)}%`;
-            if (totalRate >= 100) {
-                totalOutput.style.color = '#d32f2f';
-                if (calculateButton) { 
-                    calculateButton.disabled = true; 
-                    calculateButton.textContent = 'ERROR! Total Persentase Melebihi 100%'; 
-                    calculateButton.style.backgroundColor = '#d32f2f'; 
-                }
-            } else {
-                totalOutput.style.color = '#4CAF50';
-                if (calculateButton) { 
-                    calculateButton.disabled = false; 
-                    calculateButton.textContent = 'Kalkulasi'; 
-                    calculateButton.style.backgroundColor = '#4CAF50'; 
-                }
+            const bgColor = totalRate >= 100 ? '#d32f2f' : '#4CAF50';
+            const textContent = totalRate >= 100 ? 'ERROR! Total Persentase Melebihi 100%' : 'Kalkulasi';
+
+            totalOutput.style.color = bgColor;
+            if (calculateButton) { 
+                calculateButton.disabled = totalRate >= 100; 
+                calculateButton.textContent = textContent; 
+                calculateButton.style.backgroundColor = bgColor; 
             }
         }
     }
@@ -302,40 +324,23 @@
         const operationalBudgetRate = parseFloat(document.getElementById('operationalBudgetRate')?.value) / 100 || 0;
         const profitMarginRate = parseFloat(document.getElementById('profitMarginRate')?.value) / 100 || 0;
 
-        const minSellingPriceOutput = document.getElementById('minSellingPriceOutput');
-        const sellingPriceLabel = document.getElementById('sellingPriceLabel'); 
-        const profitAmountOutput = document.getElementById('profitAmountOutput');
-        const mpFeeAmountOutput = document.getElementById('mpFeeAmountOutput');
-        const adsAmountOutput = document.getElementById('adsAmountOutput');
-        const affiliateAmountOutput = document.getElementById('affiliateAmountOutput');
-        const operationalAmountOutput = document.getElementById('operationalAmountOutput');
-        const otherCostOutput = document.getElementById('otherCostOutput');
-        const modalPriceOutput = document.getElementById('modalPriceOutput');
-        const roasContainer = document.getElementById('roasBreakdownContainer'); 
-        const calculateButton = document.getElementById('calculateButton');
-
-        if (!minSellingPriceOutput || !roasContainer) return; 
+        const elements = ['minSellingPriceOutput', 'sellingPriceLabel', 'profitAmountOutput', 'mpFeeAmountOutput', 'adsAmountOutput', 'affiliateAmountOutput', 'operationalAmountOutput', 'otherCostOutput', 'modalPriceOutput', 'roasBreakdownContainer', 'calculateButton'];
+        const outputs = elements.reduce((acc, id) => ({ ...acc, [id]: document.getElementById(id) }), {});
+        
+        if (!outputs.minSellingPriceOutput || !outputs.roasBreakdownContainer) return; 
         
         const totalRateFraction = mpFeeRate + adsBudgetRate + affiliateBudgetRate + operationalBudgetRate + profitMarginRate;
 
         if (totalRateFraction >= 1) {
-            minSellingPriceOutput.textContent = "ERROR!";
-            roasContainer.style.display = 'none'; 
+            outputs.minSellingPriceOutput.textContent = "ERROR!";
+            outputs.roasBreakdownContainer.style.display = 'none'; 
             return;
         }
 
-        const calculatedBasePrice = modalPrice / (1 - totalRateFraction);
-        
-        const calculatedMinPrice = calculatedBasePrice; 
-        
-        let finalSellingPrice = calculatedMinPrice;
+        const calculatedMinPrice = modalPrice / (1 - totalRateFraction);
+        let finalSellingPrice = actualPriceInput > 0 ? actualPriceInput : calculatedMinPrice;
 
-        if (actualPriceInput > 0) {
-            finalSellingPrice = actualPriceInput;
-            sellingPriceLabel.textContent = "Harga Jual Aktual";
-        } else {
-            sellingPriceLabel.textContent = "Harga Jual Minimal";
-        }
+        outputs.sellingPriceLabel.textContent = actualPriceInput > 0 ? "Harga Jual Aktual" : "Harga Jual Minimal";
 
         const mpFeeAmount = finalSellingPrice * mpFeeRate;
         const adsAmount = finalSellingPrice * adsBudgetRate;
@@ -345,31 +350,29 @@
         const totalVariableCosts = mpFeeAmount + adsAmount + affiliateAmount + operationalAmount;
         const profitAmount = finalSellingPrice - modalPrice - otherCost - totalVariableCosts;
 
-        if (profitAmount < -1) {
-            if (calculateButton) {
-                calculateButton.textContent = "ERROR! Total Profit Margin < 0";
-                calculateButton.style.backgroundColor = "#d32f2f";
-            }
-        } else {
-            if (calculateButton) {
-                calculateButton.textContent = "Kalkulasi";
-                calculateButton.style.backgroundColor = "#4CAF50";
-            }
+        if (profitAmount < -1 && outputs.calculateButton) {
+            outputs.calculateButton.textContent = "ERROR! Total Profit Margin < 0";
+            outputs.calculateButton.style.backgroundColor = "#d32f2f";
+        } else if (outputs.calculateButton) {
+            outputs.calculateButton.textContent = "Kalkulasi";
+            outputs.calculateButton.style.backgroundColor = "#4CAF50";
         }
 
-        minSellingPriceOutput.textContent = formatCurrency(finalSellingPrice);
-        profitAmountOutput.textContent = formatCurrency(profitAmount);
-        mpFeeAmountOutput.textContent = formatCurrency(mpFeeAmount);
-        adsAmountOutput.textContent = formatCurrency(adsAmount);
-        affiliateAmountOutput.textContent = formatCurrency(affiliateAmount);
-        operationalAmountOutput.textContent = formatCurrency(operationalAmount);
-        otherCostOutput.textContent = formatCurrency(otherCost);
-        modalPriceOutput.textContent = formatCurrency(modalPrice);
+        outputs.minSellingPriceOutput.textContent = formatCurrency(finalSellingPrice);
+        outputs.profitAmountOutput.textContent = formatCurrency(profitAmount);
+        outputs.mpFeeAmountOutput.textContent = formatCurrency(mpFeeAmount);
+        outputs.adsAmountOutput.textContent = formatCurrency(adsAmount);
+        outputs.affiliateAmountOutput.textContent = formatCurrency(affiliateAmount);
+        outputs.operationalAmountOutput.textContent = formatCurrency(operationalAmount);
+        outputs.otherCostOutput.textContent = formatCurrency(otherCost);
+        outputs.modalPriceOutput.textContent = formatCurrency(modalPrice);
         
         const variableNonAds = mpFeeAmount + affiliateAmount + operationalAmount;
         const totalFixedAndNonAds = modalPrice + otherCost + variableNonAds;
 
         generateRoasSimulation(finalSellingPrice, totalFixedAndNonAds);
+        
+        triggerResizeSequence(); 
     }
     
     function generateRoasSimulation(sellingPrice, totalFixedAndNonAds) {
@@ -462,51 +465,16 @@
         if (calculateButton) {
             calculateButton.addEventListener('click', calculateMarketplacePrice);
         }
+        
+        const observer = new ResizeObserver(() => triggerResizeSequence());
+        const container = document.getElementById('main-container');
+        if(container) observer.observe(container);
+        
+        document.addEventListener('click', triggerResizeSequence);
+
         updateTotalVariable();
         calculateMarketplacePrice(); 
+        triggerResizeSequence(); 
     });
-
-
-    // Widget Height Adjuster
-    let lastSentHeight = 0;
-    const FRAME_ID = 'marketplace-calculator-widget';
-    const FALLBACK_DELAY_MS = 50;
-
-    const getAccurateHeight = () => {
-        const { body, documentElement: html } = document;
-        
-        return Math.round(
-            Math.max(
-                body.scrollHeight,
-                html.scrollHeight,
-                body.offsetHeight,
-                html.offsetHeight,
-                body.clientHeight,
-                html.clientHeight
-            )
-        );
-    };
-
-    const sendHeight = () => {
-        const currentHeight = getAccurateHeight();
-
-        if (currentHeight === lastSentHeight && lastSentHeight !== 0) {
-            return;
-        }
-        
-        window.parent.postMessage({
-            height: currentHeight,
-            frameId: FRAME_ID
-        }, '*');
-        
-        lastSentHeight = currentHeight;
-        console.log(`Final Height Sent: ${currentHeight}px`);
-    };
-
-    // --- Control Flow ---
-    window.addEventListener('load', sendHeight);
-    window.addEventListener('resize', sendHeight);
-    setTimeout(sendHeight, FALLBACK_DELAY_MS);
-
 </script>
 </html>
