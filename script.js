@@ -3,7 +3,7 @@
 // =========================================================================
 const WEBHOOK_URL = "https://hook.us2.make.com/ilghmt5fjvq7q946ek6bwogu5kbl6vow"; 
 const STORAGE_KEY = "user_access_token_v2"; 
-const FRAME_ID = 'marketplace-calculator-widget'; // DIADAPTASI DARI MARKETPLACE
+const FRAME_ID = 'marketplace-calculator-widget'; 
 
 // =========================================================================
 // --- JAVASCRIPT MARKETPLACE CALCULATOR (LOGIC) ---
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('saveImageBtn').addEventListener('click', saveToImage);
     
     const observer = new ResizeObserver(() => triggerResizeSequence());
-    const container = document.getElementById('marketplace-app'); // Diubah dari 'main-container'
+    const container = document.getElementById('marketplace-app'); 
     if(container) observer.observe(container);
     document.addEventListener('click', triggerResizeSequence);
 
@@ -107,7 +107,6 @@ function unlockApp() {
     document.getElementById("lock-app").style.display = "none";
     document.getElementById("main-app").style.display = "block";
     
-    // PENTING: Panggil resize Kalkulator di sini
     triggerResizeSequence(); 
 }
 
@@ -124,7 +123,7 @@ function handleEnter(e) {
 // --- MARKETPLACE FUNCTIONS (DIADAPTASI) ---
 // =========================================================================
 function getAccurateHeight() {
-    const container = document.getElementById('marketplace-app'); // Diubah dari 'main-container'
+    const container = document.getElementById('marketplace-app');
     if(container) return container.offsetHeight + 30; 
     return document.body.scrollHeight + 30;
 }
@@ -186,9 +185,14 @@ function setupSliderSync(sliderId, numberId) {
 }
 
 function saveToImage() {
-    const btn = document.getElementById('saveImageBtn');
+    // 1. Definisikan tombol Save dan Log Out
+    const saveBtn = document.getElementById('saveImageBtn');
+    const logoutBtn = document.querySelector('.marketplace-logout-button'); // Ambil tombol Log Out
     const captureArea = document.getElementById('captureArea'); 
-    btn.style.display = 'none'; 
+    
+    // 2. SEMBUNYIKAN KEDUA TOMBOL sebelum capture
+    saveBtn.style.display = 'none'; 
+    if (logoutBtn) logoutBtn.style.display = 'none'; // Sembunyikan Log Out
     
     const prodName = document.getElementById('productNameInput').value.trim().replace(/\s+/g, '_');
     const now = new Date();
@@ -202,10 +206,16 @@ function saveToImage() {
         link.download = fileName;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        btn.style.display = 'flex'; 
+        
+        // 3. TAMPILKAN KEMBALI KEDUA TOMBOL setelah capture
+        saveBtn.style.display = 'flex'; 
+        if (logoutBtn) logoutBtn.style.display = 'flex'; // Tampilkan Log Out
     }).catch(err => {
         alert('Gagal menyimpan gambar.');
-        btn.style.display = 'flex';
+        
+        // 4. TAMPILKAN KEMBALI KEDUA TOMBOL jika terjadi error
+        saveBtn.style.display = 'flex';
+        if (logoutBtn) logoutBtn.style.display = 'flex'; // Tampilkan Log Out
     });
 }
 
@@ -405,4 +415,3 @@ function generateRoasSimulation(sellingPrice, totalFixedAndNonAds) {
         `;
     });
 }
-
