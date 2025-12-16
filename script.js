@@ -124,7 +124,7 @@ function handleEnter(e) {
 }
 
 // =========================================================================
-// --- MARKETPLACE FUNCTIONS (DIADAPTASI: PADDING NOL) ---
+// --- MARKETPLACE FUNCTIONS (DIADAPTASI: ZERO BUFFER) ---
 // =========================================================================
 function getAccurateHeight() {
     const lockApp = document.getElementById('lock-app');
@@ -133,16 +133,16 @@ function getAccurateHeight() {
     if (lockApp && lockApp.style.display !== 'none') {
         const loginCard = document.querySelector('.login-card');
         
-        // Padding Nol (Zero Padding) untuk Lock Screen
-        return loginCard ? loginCard.offsetHeight + 10 : document.body.scrollHeight + 10;
+        // **ZERO BUFFER (TINGGI MURNI)**
+        return loginCard ? loginCard.offsetHeight : document.body.scrollHeight;
     }
 
     // Logika 2: Untuk Marketplace App (tinggi penuh)
     const container = document.getElementById('marketplace-app');
     
-    // Padding Nol (Zero Padding) untuk Aplikasi Utama
-    if(container) return container.offsetHeight + 10; 
-    return document.body.scrollHeight + 10;
+    // **ZERO BUFFER (TINGGI MURNI)**
+    if(container) return container.offsetHeight; 
+    return document.body.scrollHeight;
 }
 
 function sendHeight() {
