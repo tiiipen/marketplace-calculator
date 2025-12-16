@@ -132,7 +132,7 @@ function getAccurateHeight() {
     // Logika 1: Jika Lock Screen sedang terlihat (diperlukan untuk menangani error)
     if (lockApp && lockApp.style.display !== 'none') {
         const loginCard = document.querySelector('.login-card');
-        // Tinggi Lock Screen = Tinggi Card Login + buffer
+        // Tinggi Lock Screen = Tinggi Card Login + buffer (diperlukan saat actionArea tampil)
         return loginCard ? loginCard.offsetHeight + 100 : document.body.scrollHeight;
     }
 
