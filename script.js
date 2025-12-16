@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // =========================================================================
-// --- LOCK ACCESS FUNCTIONS (DENGAN LOGIC RESIZE LOCK SCREEN) ---
+// --- LOCK ACCESS FUNCTIONS (TIDAK DIUBAH) ---
 // =========================================================================
 async function checkCredentials() {
     let phone = document.getElementById("phoneInput").value.trim();
@@ -97,10 +97,6 @@ async function checkCredentials() {
         const card = document.querySelector('.login-card');
         card.style.transform = "translateX(5px)";
         setTimeout(() => card.style.transform = "translateX(0)", 100);
-        
-        // --- PERBAIKAN: Panggil resize saat error login muncul ---
-        triggerResizeSequence(); 
-        
     } finally {
         btn.innerText = "Masuk Aplikasi";
         btn.disabled = false;
@@ -111,7 +107,6 @@ function unlockApp() {
     document.getElementById("lock-app").style.display = "none";
     document.getElementById("main-app").style.display = "block";
     
-    // --- PERBAIKAN: Panggil resize untuk Kalkulator (tinggi penuh) ---
     triggerResizeSequence(); 
 }
 
@@ -125,22 +120,11 @@ function handleEnter(e) {
 }
 
 // =========================================================================
-// --- MARKETPLACE FUNCTIONS (DENGAN LOGIC RESIZE LOCK SCREEN) ---
+// --- MARKETPLACE FUNCTIONS (DIADAPTASI) ---
 // =========================================================================
 function getAccurateHeight() {
-    const lockApp = document.getElementById('lock-app');
-    
-    // Logika 1: Jika Lock Screen sedang terlihat
-    if (lockApp && lockApp.style.display !== 'none') {
-        const loginCard = document.querySelector('.login-card');
-        // Tinggi Lock Screen = Tinggi Card Login + buffer (untuk error area)
-        return loginCard ? loginCard.offsetHeight + 100 : document.body.scrollHeight;
-    }
-    
-    // Logika 2: Untuk Marketplace App
     const container = document.getElementById('marketplace-app');
-    // Tinggi Kalkulator = Tinggi container + buffer (untuk tombol logout)
-    if(container) return container.offsetHeight + 60; 
+    if(container) return container.offsetHeight + 30; 
     return document.body.scrollHeight + 30;
 }
 
@@ -201,12 +185,14 @@ function setupSliderSync(sliderId, numberId) {
 }
 
 function saveToImage() {
+    // 1. Definisikan tombol Save dan Log Out
     const saveBtn = document.getElementById('saveImageBtn');
-    const logoutBtn = document.querySelector('.marketplace-logout-button'); 
+    const logoutBtn = document.querySelector('.marketplace-logout-button'); // Ambil tombol Log Out
     const captureArea = document.getElementById('captureArea'); 
     
+    // 2. SEMBUNYIKAN KEDUA TOMBOL sebelum capture
     saveBtn.style.display = 'none'; 
-    if (logoutBtn) logoutBtn.style.display = 'none'; 
+    if (logoutBtn) logoutBtn.style.display = 'none'; // Sembunyikan Log Out
     
     const prodName = document.getElementById('productNameInput').value.trim().replace(/\s+/g, '_');
     const now = new Date();
@@ -221,13 +207,15 @@ function saveToImage() {
         link.href = canvas.toDataURL('image/png');
         link.click();
         
+        // 3. TAMPILKAN KEMBALI KEDUA TOMBOL setelah capture
         saveBtn.style.display = 'flex'; 
-        if (logoutBtn) logoutBtn.style.display = 'flex'; 
+        if (logoutBtn) logoutBtn.style.display = 'flex'; // Tampilkan Log Out
     }).catch(err => {
         alert('Gagal menyimpan gambar.');
         
+        // 4. TAMPILKAN KEMBALI KEDUA TOMBOL jika terjadi error
         saveBtn.style.display = 'flex';
-        if (logoutBtn) logoutBtn.style.display = 'flex';
+        if (logoutBtn) logoutBtn.style.display = 'flex'; // Tampilkan Log Out
     });
 }
 
@@ -427,3 +415,4 @@ function generateRoasSimulation(sellingPrice, totalFixedAndNonAds) {
         `;
     });
 }
+
