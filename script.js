@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     document.getElementById('saveImageBtn').addEventListener('click', saveToImage);
     
+    // Resize Observer untuk memastikan iframe menyesuaikan tinggi saat konten berubah
     const observer = new ResizeObserver(() => triggerResizeSequence());
     const container = document.getElementById('marketplace-app'); 
     if(container) observer.observe(container);
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // =========================================================================
-// --- LOCK ACCESS FUNCTIONS (DENGAN LOGIC RESIZE LOCK SCREEN) ---
+// --- LOCK ACCESS FUNCTIONS ---
 // =========================================================================
 async function checkCredentials() {
     let phone = document.getElementById("phoneInput").value.trim();
@@ -124,23 +125,23 @@ function handleEnter(e) {
 }
 
 // =========================================================================
-// --- MARKETPLACE FUNCTIONS (DIADAPTASI: ZERO BUFFER) ---
+// --- MARKETPLACE FUNCTIONS (ZERO BUFFER HEIGHT) ---
 // =========================================================================
 function getAccurateHeight() {
     const lockApp = document.getElementById('lock-app');
     
-    // Logika 1: Jika Lock Screen sedang terlihat
+    // Logika 1: Lock Screen
     if (lockApp && lockApp.style.display !== 'none') {
         const loginCard = document.querySelector('.login-card');
         
-        // **ZERO BUFFER (TINGGI MURNI)**
+        // ZERO BUFFER MURNI: Mengirim offsetHeight tanpa tambahan
         return loginCard ? loginCard.offsetHeight : document.body.scrollHeight;
     }
 
-    // Logika 2: Untuk Marketplace App (tinggi penuh)
+    // Logika 2: Aplikasi Utama (Marketplace App)
     const container = document.getElementById('marketplace-app');
     
-    // **ZERO BUFFER (TINGGI MURNI)**
+    // ZERO BUFFER MURNI: Mengirim offsetHeight tanpa tambahan
     if(container) return container.offsetHeight; 
     return document.body.scrollHeight;
 }
