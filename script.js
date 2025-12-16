@@ -98,7 +98,7 @@ async function checkCredentials() {
         card.style.transform = "translateX(5px)";
         setTimeout(() => card.style.transform = "translateX(0)", 100);
         
-        // --- PERBAIKAN: Panggil resize sequence saat error muncul ---
+        // Panggil resize sequence saat error muncul (tinggi Lock Screen bertambah)
         triggerResizeSequence(); 
         
     } finally {
@@ -124,23 +124,25 @@ function handleEnter(e) {
 }
 
 // =========================================================================
-// --- MARKETPLACE FUNCTIONS (DIADAPTASI) ---
+// --- MARKETPLACE FUNCTIONS (DIADAPTASI: PADDING NOL) ---
 // =========================================================================
 function getAccurateHeight() {
     const lockApp = document.getElementById('lock-app');
     
-    // Logika 1: Jika Lock Screen sedang terlihat (diperlukan untuk menangani error)
+    // Logika 1: Jika Lock Screen sedang terlihat
     if (lockApp && lockApp.style.display !== 'none') {
         const loginCard = document.querySelector('.login-card');
-        // Tinggi Lock Screen = Tinggi Card Login + buffer (diperlukan saat actionArea tampil)
-        return loginCard ? loginCard.offsetHeight + 100 : document.body.scrollHeight;
+        
+        // Padding Nol (Zero Padding) untuk Lock Screen
+        return loginCard ? loginCard.offsetHeight + 10 : document.body.scrollHeight + 10;
     }
 
     // Logika 2: Untuk Marketplace App (tinggi penuh)
     const container = document.getElementById('marketplace-app');
-    // Tinggi Kalkulator = Tinggi container + buffer (untuk tombol logout/padding bawah)
-    if(container) return container.offsetHeight + 60; 
-    return document.body.scrollHeight + 30;
+    
+    // Padding Nol (Zero Padding) untuk Aplikasi Utama
+    if(container) return container.offsetHeight + 10; 
+    return document.body.scrollHeight + 10;
 }
 
 function sendHeight() {
