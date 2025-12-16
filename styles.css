@@ -1,593 +1,580 @@
-/* ========================================================================= */
-/* --- GLOBAL RESET & UTILITIES --- */
-/* ========================================================================= */
-html, body { 
-    margin: 0; 
-    padding: 0; 
-    width: 100%; 
-    height: auto; 
-    min-height: 100%; 
-    background-color: transparent;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-    overflow-x: hidden; 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  background-color: transparent;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-    margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-input[type=number] { 
-    -moz-appearance: textfield; 
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
-/* ========================================================================= */
-/* --- CSS LOCK ACCESS (#lock-app) --- */
-/* ========================================================================= */
-#lock-app { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%;
-    background: white; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    z-index: 9999;
+#lock-app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 #lock-app .login-card {
-    background: white; 
-    width: 100%; 
-    max-width: 380px;
-    padding: 40px 30px; 
-    text-align: center;
-    /* border: 1px solid #eee; */
-    /* box-shadow: 0 10px 40px rgba(0,0,0,0.08); */
-    /* border-radius: 20px; */
+  background: white;
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 30px;
+  text-align: center;
 }
 
 #lock-app .icon-lock {
-    width: 60px; 
-    height: 60px; 
-    background: #e8f7f0; 
-    color: #00a76f;
-    border-radius: 50%; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    margin-bottom: 20px;
+  width: 60px;
+  height: 60px;
+  background: #e8f7f0;
+  color: #00a76f;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
-#lock-app h3 { 
-    margin: 0 0 10px; 
-    color: #333; 
-    font-weight: 700; 
+#lock-app h3 {
+  margin: 0 0 10px;
+  color: #333;
+  font-weight: 700;
 }
-#lock-app p.desc { 
-    color: #888; 
-    font-size: 14px; 
-    margin-bottom: 25px; 
+#lock-app p.desc {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 25px;
 }
-#lock-app .input-group { 
-    text-align: left; 
-    margin-bottom: 15px; 
+#lock-app .input-group {
+  text-align: left;
+  margin-bottom: 15px;
 }
-#lock-app .input-group label { 
-    font-size: 12px; 
-    font-weight: 600; 
-    color: #666; 
-    display: block; 
-    margin-bottom: 5px;
+#lock-app .input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
 }
 
-#lock-app input[type="tel"], 
+#lock-app input[type="tel"],
 #lock-app input[type="email"] {
-    width: 100%; 
-    padding: 14px 15px; 
-    font-size: 16px;
-    border: 2px solid #f0f0f0; 
-    border-radius: 12px; 
-    outline: none;
-    background: #fafafa; 
-    box-sizing: border-box; 
-    transition: 0.3s;
+  width: 100%;
+  padding: 14px 15px;
+  font-size: 16px;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  outline: none;
+  background: #fafafa;
+  box-sizing: border-box;
+  transition: 0.3s;
 }
-#lock-app input[type="tel"]:focus, 
-#lock-app input[type="email"]:focus { 
-    border-color: #00a76f; 
-    background: #fff; 
+#lock-app input[type="tel"]:focus,
+#lock-app input[type="email"]:focus {
+  border-color: #00a76f;
+  background: #fff;
 }
 #lock-app button.btn-access {
-    width: 100%; 
-    padding: 14px; 
-    font-size: 16px; 
-    font-weight: 600;
-    color: white; 
-    background-color: #00a76f; 
-    border: none; 
-    border-radius: 12px;
-    cursor: pointer; 
-    transition: 0.2s; 
-    box-sizing: border-box; 
-    margin-top: 10px;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #00a76f;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-sizing: border-box;
+  margin-top: 10px;
 }
-#lock-app button.btn-access:hover { 
-    background-color: #008f5e; 
+#lock-app button.btn-access:hover {
+  background-color: #008f5e;
 }
-#lock-app button.btn-access:disabled { 
-    background-color: #ccc; 
-    cursor: not-allowed; 
+#lock-app button.btn-access:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
-#lock-app #actionArea { 
-    margin-top: 20px; 
-    display: none; 
+#lock-app #actionArea {
+  margin-top: 20px;
+  display: none;
 }
-#lock-app .error-text { 
-    color: #d93025; 
-    font-size: 14px; 
-    font-weight: bold; 
-    margin-bottom: 15px; 
-    display: block;
+#lock-app .error-text {
+  color: #d93025;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  display: block;
 }
 #lock-app .btn-buy {
-    display: block; 
-    width: 100%; 
-    padding: 14px; 
-    font-size: 16px; 
-    font-weight: 600;
-    border-radius: 12px; 
-    margin-bottom: 15px; 
-    background: #222; 
-    color: white;
-    text-decoration: none; 
-    box-sizing: border-box; 
-    text-align: center;
-    transition: background 0.2s;
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  background: #222;
+  color: white;
+  text-decoration: none;
+  box-sizing: border-box;
+  text-align: center;
+  transition: background 0.2s;
 }
-#lock-app .btn-buy:hover { 
-    background: #444; 
+#lock-app .btn-buy:hover {
+  background: #444;
 }
-#lock-app .link-cs { 
-    color: #666; 
-    font-size: 14px; 
-    text-decoration: none; 
-    font-weight: 500; 
+#lock-app .link-cs {
+  color: #666;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
 }
-#lock-app .link-cs:hover { 
-    text-decoration: underline; 
-    color: #00a76f; 
-}
-
-#main-app { 
-    display: none; 
+#lock-app .link-cs:hover {
+  text-decoration: underline;
+  color: #00a76f;
 }
 
-/* ========================================================================= */
-/* --- CSS MARKETPLACE CALCULATOR (#marketplace-app) --- */
-/* ========================================================================= */
+#main-app {
+  display: none;
+}
 
-/* Isolasi Box-Sizing untuk Marketplace App */
-#marketplace-app *, 
+#marketplace-app *,
 #marketplace-app {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #marketplace-app {
-    padding: 20px; 
-    width: 100%; 
-    max-width: 450px;
-    margin: 0 auto;
-    display: block; 
-    position: relative;
-    padding-bottom: 25px;
-    background-color: #ffffff;
+  padding: 20px;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  padding-bottom: 25px;
+  background-color: #ffffff;
 }
 
 /* Output Area and Buttons Width Fix */
 #marketplace-app #captureArea #roasBreakdownContainer,
 #marketplace-app #captureArea #saveImageBtn,
 #marketplace-app #captureArea .marketplace-logout-button {
-    max-width: 450px;
-    margin-left: auto;
-    margin-right: auto;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#marketplace-app .output-card { 
-    max-width: 450px;
-    margin-left: auto;
-    margin-right: auto;
-    background: #fff; 
-    border: 1px solid #eee; 
-    border-radius: 8px; 
-    padding: 20px; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
-    margin-bottom: 20px; 
-    width: 100%; 
+#marketplace-app .output-card {
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 /* Logout Button Style */
-#marketplace-app .marketplace-logout-button { 
-    width: 100%; 
-    padding: 12px; 
-    background-color: #222; 
-    color: white; 
-    font-size: 1.1em; 
-    font-weight: bold; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease; 
-    margin-top: 15px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+#marketplace-app .marketplace-logout-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #222;
+  color: white;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #marketplace-app .marketplace-logout-button:hover {
-    background-color: #444; 
+  background-color: #444;
 }
 
 /* Main Calculator Styles */
-#marketplace-app .version-tag { 
-    text-align: center; 
-    color: #6c757d; 
-    font-size: 0.9em; 
-    margin-top: -10px; 
-    margin-bottom: 25px; 
+#marketplace-app .version-tag {
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.9em;
+  margin-top: -10px;
+  margin-bottom: 25px;
 }
-#marketplace-app h2 { 
-    color: #333; 
-    text-align: center; 
-    margin-bottom: 20px; 
-    margin-top: 10px; 
+#marketplace-app h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
-#marketplace-app hr { 
-    border: 0; 
-    height: 1px; 
-    background: #eee; 
-    margin: 20px 0; 
+#marketplace-app hr {
+  border: 0;
+  height: 1px;
+  background: #eee;
+  margin: 20px 0;
 }
-#marketplace-app .input-group { 
-    margin-bottom: 20px; 
+#marketplace-app .input-group {
+  margin-bottom: 20px;
 }
-#marketplace-app .input-group label { 
-    display: block; 
-    margin-bottom: 8px; 
-    font-weight: bold; 
-    color: #000000; 
-    font-size: 1em; 
+#marketplace-app .input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #000000;
+  font-size: 1em;
 }
-#marketplace-app .input-row { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
+#marketplace-app .input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-#marketplace-app .calculator-input { 
-    padding: 12px; 
-    border: 1px solid #ddd; 
-    border-radius: 6px; 
-    box-sizing: border-box; 
-    font-size: 1em; 
-    width: 100%; 
+#marketplace-app .calculator-input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1em;
+  width: 100%;
 }
-#marketplace-app .percentage-input { 
-    width: 80px; 
-    text-align: right; 
-    font-weight: bold; 
+#marketplace-app .percentage-input {
+  width: 80px;
+  text-align: right;
+  font-weight: bold;
 }
-#marketplace-app .slider-input { 
-    flex-grow: 1; 
-    height: 10px; 
-    -webkit-appearance: none; 
-    background: #e0e0e0; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    padding: 0; 
+#marketplace-app .slider-input {
+  flex-grow: 1;
+  height: 10px;
+  -webkit-appearance: none;
+  background: #e0e0e0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
 }
-#marketplace-app .slider-input::-webkit-slider-thumb { 
-    -webkit-appearance: none; 
-    appearance: none; 
-    width: 22px; 
-    height: 22px; 
-    border-radius: 50%; 
-    background: #4CAF50; 
-    cursor: pointer; 
-    border: 3px solid #fff; 
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+#marketplace-app .slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4caf50;
+  cursor: pointer;
+  border: 3px solid #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
-#marketplace-app .slider-min-max { 
-    font-size: 0.8em; 
-    color: #999; 
-    margin-top: 5px; 
-    text-align: left; 
+#marketplace-app .slider-min-max {
+  font-size: 0.8em;
+  color: #999;
+  margin-top: 5px;
+  text-align: left;
 }
-#marketplace-app .action-button { 
-    width: 100%; 
-    padding: 12px; 
-    background-color: #4CAF50; 
-    color: white; 
-    font-size: 1.1em; 
-    font-weight: bold; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease; 
-    margin-top: 10px; 
-    margin-bottom: 25px; 
+#marketplace-app .action-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-bottom: 25px;
 }
-#marketplace-app .action-button:hover { 
-    background-color: #45a049; 
+#marketplace-app .action-button:hover {
+  background-color: #45a049;
 }
-#marketplace-app .action-button:disabled { 
-    background-color: #ccc; 
-    cursor: not-allowed; 
+#marketplace-app .action-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
-#marketplace-app .save-button { 
-    width: 100%; 
-    padding: 12px; 
-    background-color: #4CAF50; 
-    color: white; 
-    font-size: 1.1em; 
-    font-weight: bold; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease; 
-    margin-top: 15px; 
-    display: none; 
-    align-items: center; 
-    justify-content: center; 
+#marketplace-app .save-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  display: none;
+  align-items: center;
+  justify-content: center;
 }
-#marketplace-app .save-button:hover { 
-    background-color: #45a049; 
+#marketplace-app .save-button:hover {
+  background-color: #45a049;
 }
-#marketplace-app .rounding-options { 
-    display: flex; 
-    gap: 10px; 
+#marketplace-app .rounding-options {
+  display: flex;
+  gap: 10px;
 }
-#marketplace-app .round-btn { 
-    flex: 1; 
-    text-align: center; 
-    padding: 10px 5px; 
-    border: 1px solid #ddd; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-size: 0.9em; 
-    background: #fff; 
-    transition: all 0.2s; 
-    font-weight: bold; 
-    color: #777; 
+#marketplace-app .round-btn {
+  flex: 1;
+  text-align: center;
+  padding: 10px 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  background: #fff;
+  transition: all 0.2s;
+  font-weight: bold;
+  color: #777;
 }
-#marketplace-app .round-btn.active { 
-    background-color: #4CAF50; 
-    color: white; 
-    border-color: #4CAF50; 
-    box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3); 
+#marketplace-app .round-btn.active {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+  box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
 }
-#marketplace-app #captureArea { 
-    background-color: #ffffff; 
-    display: none; 
-    width: 100%; 
+#marketplace-app #captureArea {
+  background-color: #ffffff;
+  display: none;
+  width: 100%;
 }
 
 /* Output Details */
-#marketplace-app .product-name-output { 
-    font-size: 1.1em; 
-    font-weight: bold; 
-    color: #333; 
-    text-align: center; 
-    margin-bottom: 5px; 
-    display: none; 
+#marketplace-app .product-name-output {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 5px;
+  display: none;
 }
-#marketplace-app .generated-timestamp { 
-    font-size: 0.85em; 
-    color: #888; 
-    text-align: center; 
-    margin-bottom: 15px; 
-    border-bottom: 1px solid #eee; 
-    padding-bottom: 10px; 
-    display: none; 
+#marketplace-app .generated-timestamp {
+  font-size: 0.85em;
+  color: #888;
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  display: none;
 }
-#marketplace-app .detail-row { 
-    display: flex; 
-    justify-content: space-between; 
-    padding: 5px 0; 
-    font-size: 0.95em; 
-    color: #333; 
+#marketplace-app .detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.95em;
+  color: #333;
 }
-#marketplace-app .detail-row strong { 
-    color: #000; 
-    font-size: 1em; 
-    font-weight: bold; 
+#marketplace-app .detail-row strong {
+  color: #000;
+  font-size: 1em;
+  font-weight: bold;
 }
-#marketplace-app .result-header { 
-    padding: 5px 0 10px 0; 
-    border-bottom: 2px solid #4CAF50; 
-    margin-bottom: 10px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+#marketplace-app .result-header {
+  padding: 5px 0 10px 0;
+  border-bottom: 2px solid #4caf50;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-#marketplace-app .result-header span { 
-    font-weight: bold; 
-    font-size: 1em; 
-    color: #333; 
+#marketplace-app .result-header span {
+  font-weight: bold;
+  font-size: 1em;
+  color: #333;
 }
-#marketplace-app .result-header strong { 
-    color: #4CAF50; 
-    font-weight: bold; 
-    font-size: 1em; 
+#marketplace-app .result-header strong {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 1em;
 }
-#marketplace-app .profit-row { 
-    padding-top: 5px; 
-    margin-bottom: 15px; 
-    display: flex; 
-    justify-content: space-between; 
+#marketplace-app .profit-row {
+  padding-top: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
 }
-#marketplace-app .profit-row span { 
-    font-weight: bold; 
-    font-size: 1em; 
-    color: #333; 
+#marketplace-app .profit-row span {
+  font-weight: bold;
+  font-size: 1em;
+  color: #333;
 }
-#marketplace-app .profit-row strong { 
-    color: #FF9800; 
-    font-weight: bold; 
-    font-size: 1em; 
+#marketplace-app .profit-row strong {
+  color: #ff9800;
+  font-weight: bold;
+  font-size: 1em;
 }
-#marketplace-app .text-red-cost { 
-    color: #dc3545 !important; 
-    font-weight: bold; 
+#marketplace-app .text-red-cost {
+  color: #dc3545 !important;
+  font-weight: bold;
 }
-#marketplace-app .separator-dashed { 
-    border-bottom: 1px dashed #ddd; 
-    margin: 8px 0; 
+#marketplace-app .separator-dashed {
+  border-bottom: 1px dashed #ddd;
+  margin: 8px 0;
 }
-#marketplace-app .separator-solid { 
-    border-bottom: 2px solid #eee; 
-    margin-bottom: 20px; 
+#marketplace-app .separator-solid {
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
 }
-#marketplace-app .info-box { 
-    padding: 12px; 
-    background-color: #f5f5f5; 
-    border: 1px solid #eee; 
-    border-radius: 6px; 
-    font-size: 0.9em; 
-    color: #333; 
-    margin-bottom: 15px; 
+#marketplace-app .info-box {
+  padding: 12px;
+  background-color: #f5f5f5;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #333;
+  margin-bottom: 15px;
 }
-#marketplace-app .info-box-title { 
-    font-weight: bold; 
-    border-bottom: 1px solid #ddd; 
-    padding-bottom: 8px; 
-    margin-bottom: 10px; 
-    color: #000; 
-    font-size: 1.12em; 
-    display: block; 
+#marketplace-app .info-box-title {
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  color: #000;
+  font-size: 1.12em;
+  display: block;
 }
-#marketplace-app .info-stacked-row { 
-    margin-bottom: 10px; 
-    border-bottom: 1px dashed #ccc; 
-    padding-bottom: 8px; 
+#marketplace-app .info-stacked-row {
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 8px;
 }
-#marketplace-app .info-stacked-row:last-child { 
-    border-bottom: none; 
-    margin-bottom: 0; 
-    padding-bottom: 0; 
+#marketplace-app .info-stacked-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
-#marketplace-app .stack-label { 
-    display: block; 
-    color: #333; 
-    margin-bottom: 4px; 
-    text-align: left; 
-    font-weight: bold; 
-    font-size: 0.9em; 
+#marketplace-app .stack-label {
+  display: block;
+  color: #333;
+  margin-bottom: 4px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 0.9em;
 }
-#marketplace-app .flex-split { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    width: 100%; 
+#marketplace-app .flex-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
-#marketplace-app .left-text { 
-    color: #666; 
-    font-weight: normal; 
-    text-align: left; 
-    font-size: 0.9em; 
+#marketplace-app .left-text {
+  color: #666;
+  font-weight: normal;
+  text-align: left;
+  font-size: 0.9em;
 }
-#marketplace-app .right-text { 
-    color: #000; 
-    font-weight: bold; 
-    text-align: right; 
-    font-size: 0.9em; 
+#marketplace-app .right-text {
+  color: #000;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.9em;
 }
-#marketplace-app .roas-table-container { 
-    width: 100%; 
-    border: 1px solid #eee; 
-    border-radius: 8px; 
-    overflow: hidden; 
-    background-color: #ffffff; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
+#marketplace-app .roas-table-container {
+  width: 100%;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
-#marketplace-app .roas-header-title { 
-    font-weight: bold; 
-    color: #ffffff; 
-    font-size: 1.1em; 
-    padding: 12px; 
-    text-align: center; 
-    border-bottom: 1px solid #ffffff; 
-    margin: 0; 
-    background-color: #4CAF50; 
+#marketplace-app .roas-header-title {
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 1.1em;
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ffffff;
+  margin: 0;
+  background-color: #4caf50;
 }
-#marketplace-app .roas-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    font-size: 0.85em; 
-    background-color: #ffffff; 
-    table-layout: fixed; 
+#marketplace-app .roas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  background-color: #ffffff;
+  table-layout: fixed;
 }
 /* Roas Table Column Widths */
-#marketplace-app .roas-table thead tr:first-child th:nth-child(1) { 
-    width: 15%; 
-} 
-#marketplace-app .roas-table thead tr:first-child th:nth-child(2) { 
-    width: 22.5%; 
-} 
-#marketplace-app .roas-table thead tr:first-child th:last-child { 
-    width: 20%; 
-} 
-#marketplace-app .roas-table thead th { 
-    background-color: #F9F9F9; 
-    color: #000000; 
-    font-weight: bold; 
-    font-size: 0.85em; 
-    padding: 8px 3px; 
-    text-align: center; 
-    border-bottom: 1px solid #E0E0E0; 
-    border-right: 1px solid #E0E0E0; 
-    white-space: nowrap; 
+#marketplace-app .roas-table thead tr:first-child th:nth-child(1) {
+  width: 15%;
 }
-#marketplace-app .roas-table th, 
-#marketplace-app .roas-table td { 
-    border-bottom: 1px solid #E0E0E0; 
-    border-right: 1px solid #E0E0E0; 
-    font-size: 0.85em; 
-    padding: 8px 3px; 
+#marketplace-app .roas-table thead tr:first-child th:nth-child(2) {
+  width: 22.5%;
 }
-#marketplace-app .roas-table th:last-child, 
-#marketplace-app .roas-table td:last-child { 
-    border-right: none; 
+#marketplace-app .roas-table thead tr:first-child th:last-child {
+  width: 20%;
 }
-#marketplace-app .roas-table thead tr:nth-child(2) th:last-child { 
-    border-right: 1px solid #E0E0E0; 
+#marketplace-app .roas-table thead th {
+  background-color: #f9f9f9;
+  color: #000000;
+  font-weight: bold;
+  font-size: 0.85em;
+  padding: 8px 3px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  white-space: nowrap;
 }
-#marketplace-app .roas-table tbody tr:last-child td { 
-    border-bottom: none; 
+#marketplace-app .roas-table th,
+#marketplace-app .roas-table td {
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  font-size: 0.85em;
+  padding: 8px 3px;
 }
-#marketplace-app .roas-table td { 
-    text-align: center; 
-    color: #333; 
+#marketplace-app .roas-table th:last-child,
+#marketplace-app .roas-table td:last-child {
+  border-right: none;
 }
-#marketplace-app .roas-table td:last-child { 
-    text-align: center !important; 
-    padding-left: 0; 
-} 
+#marketplace-app .roas-table thead tr:nth-child(2) th:last-child {
+  border-right: 1px solid #e0e0e0;
+}
+#marketplace-app .roas-table tbody tr:last-child td {
+  border-bottom: none;
+}
+#marketplace-app .roas-table td {
+  text-align: center;
+  color: #333;
+}
+#marketplace-app .roas-table td:last-child {
+  text-align: center !important;
+  padding-left: 0;
+}
 
 /* Utility Classes */
-#marketplace-app .text-green { 
-    color: #28a745 !important; 
+#marketplace-app .text-green {
+  color: #28a745 !important;
 }
-#marketplace-app .text-red { 
-    color: #dc3545 !important; 
+#marketplace-app .text-red {
+  color: #dc3545 !important;
 }
-#marketplace-app .fw-bold { 
-    font-weight: bold; 
+#marketplace-app .fw-bold {
+  font-weight: bold;
 }
-#marketplace-app .bg-target { 
-    background-color: #e8f5e9; 
-} 
-#marketplace-app .bg-bep { 
-    background-color: #FFF6AC; 
-    font-weight: bold; 
-} 
-#marketplace-app .bg-loss-severe { 
-    background-color: #ffebee; 
+#marketplace-app .bg-target {
+  background-color: #e8f5e9;
+}
+#marketplace-app .bg-bep {
+  background-color: #fff6ac;
+  font-weight: bold;
+}
+#marketplace-app .bg-loss-severe {
+  background-color: #ffebee;
 }
